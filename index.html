@@ -2,144 +2,182 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Gaming Platform</title>
+<title>AF GAMING</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#f2f2f2;
-}
-
-/* HEADER */
-header{
-  background:#000;
+body{margin:0;font-family:Arial;background:#eef7ee}
+.top{
+  background:linear-gradient(135deg,#0a3,#063);
   color:#fff;
   padding:15px;
   text-align:center;
-}
-nav a{
-  color:#fff;
-  margin:0 12px;
-  text-decoration:none;
+  font-size:26px;
   font-weight:bold;
 }
-
-/* GAME TEMPLATE CARD */
-.game-card{
-  width:300px;
-  margin:30px auto;
-  background:#fff;
-  border-radius:15px;
-  box-shadow:0 0 10px rgba(0,0,0,0.2);
-  padding:20px;
+.nav{
+  background:#000;
+  padding:10px;
   text-align:center;
 }
-.game-icon{
-  width:100%;
-  height:150px;
+.nav a{color:#fff;margin:0 15px;text-decoration:none;font-weight:bold}
+.nav a:hover{color:#0f0}
+.container{max-width:1200px;margin:auto;padding:20px}
+.wallet{
+  background:#fff;padding:15px;border-radius:10px;
+  text-align:center;margin-bottom:20px;font-size:18px
+}
+.games{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px
+}
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:15px;
+  box-shadow:0 6px 15px rgba(0,0,0,.15);
+  text-align:center
+}
+.game-box{
+  height:120px;
+  border-radius:10px;
   background:linear-gradient(135deg,#000,#444);
   color:#fff;
-  font-size:28px;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:10px;
-  margin-bottom:15px;
-}
-
-button{
-  background:#000;
-  color:#fff;
-  padding:10px 25px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-}
-button:hover{opacity:0.8;}
-
-.timer{
   font-size:22px;
-  color:red;
-  margin:10px;
+  margin-bottom:10px
 }
-
+input,select,button{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:8px;
+  font-size:14px
+}
+button{background:#0a3;color:#fff;border:none;cursor:pointer}
+button:hover{opacity:.85}
+.timer{color:red;font-weight:bold;margin-top:8px}
+.result{font-weight:bold;margin-top:6px}
+.recharge{
+  background:#fff;padding:15px;border-radius:12px;margin-top:30px
+}
 footer{
-  background:#000;
-  color:#fff;
-  text-align:center;
-  padding:12px;
-  margin-top:30px;
+  background:#000;color:#fff;text-align:center;
+  padding:12px;margin-top:30px
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h2>Gaming Platform</h2>
-  <nav>
-    <a href="#">HOME</a>
-    <a href="#">GAMES</a>
-    <a href="#">WALLET</a>
-  </nav>
-</header>
+<div class="top">AF GAMING</div>
 
-<!-- GAME TEMPLATE -->
-<div class="game-card">
-  <div class="game-icon">
-    TEEN PATTI
-  </div>
-
-  <p>Wallet Balance: <b><span id="wallet">10000</span></b></p>
-
-  <input type="number" id="bet" placeholder="Enter Bet Amount">
-  <br><br>
-
-  <button onclick="startGame()">PLAY</button>
-
-  <div class="timer" id="timer"></div>
-  <h3 id="result"></h3>
+<div class="nav">
+  <a href="#games">GAMES</a>
+  <a href="#recharge">RECHARGE</a>
 </div>
 
-<footer>
-  © 2026 Gaming Platform | REAL MONEY SYSTEM
-</footer>
+<div class="container">
+
+<div class="wallet">
+  Wallet Balance: <b><span id="wallet">50000</span></b>
+</div>
+
+<div class="games" id="games"></div>
+
+<div class="recharge" id="recharge">
+  <h3>Recharge Wallet</h3>
+  <p>Send payment to: <b>03220751456</b></p>
+  <input placeholder="Transaction ID">
+  <select>
+    <option>1000 PKR</option>
+    <option>3000 PKR</option>
+    <option>5000 PKR</option>
+  </select>
+  <button onclick="alert('Recharge request submitted')">Submit</button>
+</div>
+
+</div>
+
+<footer>© 2026 AF GAMING</footer>
 
 <script>
-let wallet = 10000;
-let time = 15;
-let interval;
+let wallet = 50000;
 
-function startGame(){
-  let bet = parseInt(document.getElementById("bet").value);
-  if(!bet || bet > wallet){
-    alert("Invalid bet amount");
-    return;
+const games = [
+  {name:"Teen Patti", type:"teen"},
+  {name:"Dragon Tiger"},
+  {name:"Andar Bahar"},
+  {name:"Dice"},
+  {name:"Lucky Card"},
+  {name:"Spin Wheel"},
+  {name:"Fast 7"}
+];
+
+function updateWallet(){
+  document.getElementById("wallet").innerText = wallet;
+}
+
+const gwrap=document.getElementById("games");
+
+/* CREATE CARDS */
+games.forEach(g=>{
+  const d=document.createElement("div");
+  d.className="card";
+
+  if(g.type==="teen"){
+    d.innerHTML=`
+      <div class="game-box">Teen Patti</div>
+      <input type="number" min="100" max="20000" placeholder="Bet (100 - 20000)">
+      <button onclick="playTeen(this,2.5)">2.5x BET</button>
+      <button onclick="playTeen(this,2.5)">2.5x BET</button>
+      <button onclick="playTeen(this,5)">5x BET</button>
+      <div class="timer"></div>
+      <div class="result"></div>
+    `;
+  }else{
+    d.innerHTML=`
+      <div class="game-box">${g.name}</div>
+      <input type="number" min="100" max="20000" placeholder="Bet (100 - 20000)">
+      <button>PLAY</button>
+      <div class="timer"></div>
+      <div class="result"></div>
+    `;
+    d.querySelector("button").onclick=()=>playGame(d);
   }
+  gwrap.appendChild(d);
+});
 
-  document.getElementById("result").innerText="";
-  time = 15;
-  document.getElementById("timer").innerText="Time: 15s";
+/* NORMAL GAMES (GREEDY SAME) */
+function playGame(card){
+  const bet=parseInt(card.querySelector("input").value);
+  if(!bet || bet<100 || bet>20000 || bet>wallet){
+    alert("Invalid bet"); return;
+  }
+  let t=15;
+  const timer=card.querySelector(".timer");
+  const res=card.querySelector(".result");
+  res.innerText="";
+  timer.innerText="Time: 15s";
 
-  interval = setInterval(()=>{
-    time--;
-    document.getElementById("timer").innerText="Time: "+time+"s";
-
-    if(time <= 0){
-      clearInterval(interval);
-      showResult(bet);
+  const iv=setInterval(()=>{
+    t--;
+    timer.innerText="Time: "+t+"s";
+    if(t<=0){
+      clearInterval(iv);
+      if(Math.random()<0.5){
+        wallet+=bet;
+        res.innerText="WIN +"+bet;
+      }else{
+        wallet-=bet;
+        res.innerText="LOSE -"+bet;
+      }
+      updateWallet();
     }
   },1000);
 }
 
-function showResult(bet){
-  let win = Math.random() < 0.5;
-  if(win){
-    wallet += bet;
-    document.getElementById("result").innerText="🎉 YOU WIN +"+bet;
-  }else{
-    wallet -= bet;
-    document.getElementById("result").innerText="❌ YOU LOSE -"+bet;
-  }
-  document.getElement
+/* TEEN PATTI
