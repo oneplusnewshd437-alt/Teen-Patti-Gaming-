@@ -86,8 +86,10 @@ footer{
   Wallet Balance: <b><span id="wallet">50000</span></b>
 </div>
 
-<div class="games" id="games"></div>
+<!-- ✅ GAMES SECTION -->
+<div id="games" class="games"></div>
 
+<!-- ✅ RECHARGE SECTION -->
 <div class="recharge" id="recharge">
   <h3>Recharge Wallet</h3>
   <p>Send payment to: <b>03220751456</b></p>
@@ -105,6 +107,7 @@ footer{
 <footer>© 2026 AF GAMING</footer>
 
 <script>
+/* ================= JS ================= */
 let wallet = 50000;
 
 const games = [
@@ -121,39 +124,40 @@ function updateWallet(){
   document.getElementById("wallet").innerText = wallet;
 }
 
-const gwrap=document.getElementById("games");
+const gwrap = document.getElementById("games");
 
-/* CREATE CARDS */
+/* CREATE GAME CARDS */
 games.forEach(g=>{
-  const d=document.createElement("div");
-  d.className="card";
+  const card = document.createElement("div");
+  card.className = "card";
 
-  if(g.type==="teen"){
-    d.innerHTML=`
+  if(g.type === "teen"){
+    card.innerHTML = `
       <div class="game-box">Teen Patti</div>
-      <input type="number" min="100" max="20000" placeholder="Bet (100 - 20000)">
+      <input type="number" placeholder="Bet 100 - 20000">
       <button onclick="playTeen(this,2.5)">2.5x BET</button>
       <button onclick="playTeen(this,2.5)">2.5x BET</button>
       <button onclick="playTeen(this,5)">5x BET</button>
       <div class="timer"></div>
       <div class="result"></div>
     `;
-  }else{
-    d.innerHTML=`
+  } else {
+    card.innerHTML = `
       <div class="game-box">${g.name}</div>
-      <input type="number" min="100" max="20000" placeholder="Bet (100 - 20000)">
+      <input type="number" placeholder="Bet 100 - 20000">
       <button>PLAY</button>
       <div class="timer"></div>
       <div class="result"></div>
     `;
-    d.querySelector("button").onclick=()=>playGame(d);
+    card.querySelector("button").onclick = ()=>playGame(card);
   }
-  gwrap.appendChild(d);
+
+  gwrap.appendChild(card);
 });
 
-/* NORMAL GAMES (GREEDY SAME) */
+/* NORMAL GAME */
 function playGame(card){
-  const bet=parseInt(card.querySelector("input").value);
+  const bet = parseInt(card.querySelector("input").value);
   if(!bet || bet<100 || bet>20000 || bet>wallet){
     alert("Invalid bet"); return;
   }
@@ -169,15 +173,48 @@ function playGame(card){
     if(t<=0){
       clearInterval(iv);
       if(Math.random()<0.5){
-        wallet+=bet;
-        res.innerText="WIN +"+bet;
+        wallet+=bet; res.innerText="WIN +"+bet;
       }else{
-        wallet-=bet;
-        res.innerText="LOSE -"+bet;
+        wallet-=bet; res.innerText="LOSE -"+bet;
       }
       updateWallet();
     }
   },1000);
 }
 
-/* TEEN PATTI
+/* TEEN PATTI */
+function playTeen(btn,multi){
+  const card = btn.parentElement;
+  const bet = parseInt(card.querySelector("input").value);
+  if(!bet || bet<100 || bet>20000 || bet>wallet){
+    alert("Invalid bet"); return;
+  }
+  let t=15;
+  const timer=card.querySelector(".timer");
+  const res=card.querySelector(".result");
+  res.innerText="";
+  timer.innerText="Time: 15s";
+
+  const iv=setInterval(()=>{
+    t--;
+    timer.innerText="Time: "+t+"s";
+    if(t<=0){
+      clearInterval(iv);
+      if(Math.random() < 1/multi){
+        let win = bet * multi;
+        wallet += win;
+        res.innerText = "WIN +" + win;
+      }else{
+        wallet -= bet;
+        res.innerText = "LOSE -" + bet;
+      }
+      updateWallet();
+    }
+  },1000);
+}
+
+updateWallet();
+</script>
+
+</body>
+</html>
